@@ -41,6 +41,19 @@ const UserSchema: Schema = new Schema({
   phone: {
     type: String,
     trim: true
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: {
+    type: String
+  },
+  verificationExpires: {
+    type: Date
+  },
+  emailVerifiedAt: {
+    type: Date
   }
 }, { 
   timestamps: true 

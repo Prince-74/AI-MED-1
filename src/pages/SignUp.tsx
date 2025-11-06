@@ -40,8 +40,11 @@ const SignUp = () => {
       const result = await authService.register(formData);
       
       if (result.success) {
-        toast.success("Account created successfully!");
-        navigate("/home");
+        toast.success("Account created! Please check your email to verify your account.");
+        // Don't auto-login - redirect to signin page
+        setTimeout(() => {
+          navigate("/signin");
+        }, 2000);
       } else {
         toast.error(result.error || "Registration failed");
       }

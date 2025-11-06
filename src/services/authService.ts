@@ -141,17 +141,13 @@ class AuthService {
       const result = await response.json();
 
       if (result.success && result.data) {
-        this.token = result.data.token;
-        this.user = result.data.user;
-        this.rememberMe = true; // Default to remember for new registrations
+        // DON'T store token or user - they need to verify email first
+        console.log('Registration successful. User must verify email before logging in.');
+        console.log('Email sent:', result.data.emailSent);
         
-        console.log('Registration successful. Storing in localStorage');
-        
-        // Store in localStorage (persistent)
-        localStorage.setItem('token', this.token);
-        localStorage.setItem('user', JSON.stringify(this.user));
-        localStorage.setItem('userId', this.user.id);
-        localStorage.setItem('rememberMe', 'true');
+        // Don't set token or user in memory
+        // Don't store anything in localStorage
+        // User must verify email and then login
       }
 
       return result;

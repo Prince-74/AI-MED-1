@@ -1,0 +1,109 @@
+import { ArrowLeft, Upload, FileText, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import BottomNav from "@/components/BottomNav";
+import { useState } from "react";
+
+const ReportAnalyzer = () => {
+  const navigate = useNavigate();
+  const [analysis, setAnalysis] = useState<any>(null);
+
+  const handleFileUpload = () => {
+    // Mock analysis result
+    setAnalysis({
+      text: "Blood test report from 2024-01-15. Patient: John Doe",
+      summary: "All values are within normal range. Hemoglobin slightly elevated but acceptable.",
+      parameters: [
+        { name: "Hemoglobin", value: "15.2 g/dL", status: "normal" },
+        { name: "WBC Count", value: "7,500/μL", status: "normal" },
+        { name: "Blood Sugar", value: "95 mg/dL", status: "normal" },
+      ],
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-background pb-24">
+      {/* Header */}
+      <div className="bg-gradient-to-b from-primary to-primary/90 text-primary-foreground px-6 pt-8 pb-6 rounded-b-[2rem]">
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-12 h-12 bg-primary-foreground/20 rounded-full flex items-center justify-center hover:bg-primary-foreground/30 transition-smooth"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-2xl font-bold">Report Analyzer</h1>
+          <div className="w-12" />
+        </div>
+      </div>
+
+      {/* Upload Area */}
+      <div className="px-6 mt-6">
+        <Card className="p-8 shadow-card mb-6 border-2 border-dashed border-border hover:border-primary transition-smooth cursor-pointer">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center">
+              <Upload className="w-8 h-8 text-primary" />
+            </div>
+            <div>
+              <p className="font-semibold mb-1">Upload Medical Report</p>
+              <p className="text-sm text-muted-foreground">
+                Drop PDF or image files here, or click to browse
+              </p>
+            </div>
+            <Button onClick={handleFileUpload}>Choose File</Button>
+          </div>
+        </Card>
+
+        {/* Analysis Results */}
+        {analysis && (
+          <div className="space-y-4">
+            <Card className="p-5 shadow-md">
+              <div className="flex items-center gap-2 mb-3">
+                <FileText className="w-5 h-5 text-primary" />
+                <h3 className="font-bold">Extracted Medical Text</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">{analysis.text}</p>
+            </Card>
+
+            <Card className="p-5 shadow-md bg-sky-blue-light">
+              <h3 className="font-bold mb-2">AI Simplified Summary</h3>
+              <p className="text-sm leading-relaxed">{analysis.summary}</p>
+            </Card>
+
+            <Card className="p-5 shadow-md">
+              <h3 className="font-bold mb-4">Detected Parameters</h3>
+              <div className="space-y-3">
+                {analysis.parameters.map((param: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 bg-secondary rounded-xl"
+                  >
+                    <div>
+                      <p className="font-medium">{param.name}</p>
+                      <p className="text-sm text-muted-foreground">{param.value}</p>
+                    </div>
+                    <div
+                      className={`w-3 h-3 rounded-full ${
+                        param.status === "normal" ? "bg-green-500" : "bg-red-500"
+                      }`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Button variant="outline" className="w-full">
+              <Download className="w-4 h-4 mr-2" />
+              Save to My Records
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <BottomNav />
+    </div>
+  );
+};
+
+export default ReportAnalyzer;

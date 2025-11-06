@@ -4,10 +4,14 @@ import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import { useState } from "react";
+import { reportService, Report } from "@/services/reportService";
+import { useToast } from "@/hooks/use-toast";
 
 const ReportAnalyzer = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [analysis, setAnalysis] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFileUpload = () => {
     // Mock analysis result
@@ -20,6 +24,48 @@ const ReportAnalyzer = () => {
         { name: "Blood Sugar", value: "95 mg/dL", status: "normal" },
       ],
     });
+  };
+
+  const handleSaveReport = async () => {
+    if (!analysis) return;
+
+    setLoading(true);
+    try {
+      const userId = localStorage.getItem('userId') || 'demo-user';
+      
+      const report: Omit<Report, '_id' | 'uploadDate'> = {
+        userId,
+        fileName: 'blood-test-report.pdf',
+        fileType: 'pdf',
+        extractedText: analysis.text,
+        summary: analysis.summary,
+        parameters: analysis.parameters,
+        metadata: {
+          reportDate: new Date('2024-01-15'),
+          patientName: 'John Doe',
+        },
+      };
+
+      const result = await reportService.createReport(report);
+      
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Report saved successfully!",
+        });
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save report. Please try again.",
+        variant: "destructive",
+      });
+      console.error('Error saving report:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -93,9 +139,14 @@ const ReportAnalyzer = () => {
               </div>
             </Card>
 
-            <Button variant="outline" className="w-full">
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={handleSaveReport}
+              disabled={loading}
+            >
               <Download className="w-4 h-4 mr-2" />
-              Save to My Records
+              {loading ? "Saving..." : "Save to My Records"}
             </Button>
           </div>
         )}

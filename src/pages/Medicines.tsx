@@ -32,6 +32,9 @@ const Medicines = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
 
+  // Debug: Log medicines data
+  console.log('Medicines data loaded:', medicinesData.length, 'medicines');
+
   const filteredMedicines = medicinesData.filter((medicine) => {
     const query = searchQuery.toLowerCase();
     return (

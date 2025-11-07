@@ -9,7 +9,6 @@ import Auth from "./pages/Auth";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
-import DoctorDetail from "./pages/DoctorDetail";
 import Pharmacy from "./pages/Pharmacy";
 import Medicines from "./pages/Medicines";
 import Profile from "./pages/Profile";
@@ -40,7 +39,6 @@ const App = () => (
           
           {/* Protected routes */}
           <Route path="/home" element={<AuthGuard><Home /></AuthGuard>} />
-          <Route path="/doctor/:id" element={<AuthGuard><DoctorDetail /></AuthGuard>} />
           <Route path="/explore" element={<AuthGuard><Pharmacy /></AuthGuard>} />
           <Route path="/pharmacy" element={<AuthGuard><Pharmacy /></AuthGuard>} />
           <Route path="/medicines" element={<AuthGuard><Medicines /></AuthGuard>} />

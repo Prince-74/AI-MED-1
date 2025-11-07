@@ -1,51 +1,18 @@
-import { Bell, Search, Stethoscope, FileText, Pill, Phone, FolderOpen, Upload } from "lucide-react";
+import { Bell, Search, Stethoscope, Pill, FolderOpen, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import DoctorCard from "@/components/DoctorCard";
 import BottomNav from "@/components/BottomNav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useNavigate } from "react-router-dom";
-import doctorFemale from "@/assets/doctor-female.jpg";
-import doctorMale from "@/assets/doctor-male.jpg";
 
 const quickActions = [
   { icon: Stethoscope, label: "Check Symptoms", path: "/symptom-checker", color: "text-sky-500" },
   { icon: Upload, label: "Upload Report", path: "/report-analyzer", color: "text-green-500" },
-  { icon: Phone, label: "Consult Doctor", path: "/home", color: "text-blue-500" },
   { icon: Pill, label: "Medicines", path: "/medicines", color: "text-purple-500" },
   { icon: FolderOpen, label: "My Records", path: "/health-records", color: "text-orange-500" },
 ];
 
-const doctors = [
-  {
-    id: "1",
-    name: "Dr. Yasmine",
-    specialty: "Cardiologist",
-    image: doctorFemale,
-    rating: 4.8,
-    location: "New York Medical Center",
-    distance: "2.5km",
-  },
-  {
-    id: "2",
-    name: "Dr. Michael",
-    specialty: "Neurologist",
-    image: doctorMale,
-    rating: 4.9,
-    location: "City Health Clinic",
-    distance: "1.8km",
-  },
-  {
-    id: "3",
-    name: "Dr. Sarah",
-    specialty: "Pediatrician",
-    image: doctorFemale,
-    rating: 4.7,
-    location: "Children's Hospital",
-    distance: "3.2km",
-  },
-];
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -87,7 +54,7 @@ const Home = () => {
       {/* Quick Actions */}
       <div className="px-6 mt-6">
         <h2 className="text-lg font-bold mb-4">Quick Access</h2>
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-2 gap-4 mb-6">
           {quickActions.map((action, idx) => (
             <Card
               key={idx}
@@ -109,24 +76,6 @@ const Home = () => {
             Drink at least 8 glasses of water daily to stay hydrated and healthy!
           </p>
         </Card>
-      </div>
-
-      {/* Top Doctors */}
-      <div className="px-6 mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Top Doctors</h2>
-          <button className="text-sm text-primary font-medium">See all</button>
-        </div>
-
-        <div className="space-y-4">
-          {doctors.map((doctor) => (
-            <DoctorCard
-              key={doctor.id}
-              {...doctor}
-              onClick={() => navigate(`/doctor/${doctor.id}`)}
-            />
-          ))}
-        </div>
       </div>
 
       <BottomNav />

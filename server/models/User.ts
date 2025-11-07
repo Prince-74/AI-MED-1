@@ -12,6 +12,18 @@ export interface IUser extends Document {
   verificationToken?: string;
   verificationExpires?: Date;
   emailVerifiedAt?: Date;
+  // Health Profile
+  bloodGroup?: string;
+  height?: number; // in cm
+  weight?: number; // in kg
+  gender?: string;
+  allergies?: string[];
+  chronicConditions?: string[];
+  emergencyContact?: {
+    name: string;
+    phone: string;
+    relationship: string;
+  };
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -59,6 +71,32 @@ const UserSchema: Schema = new Schema({
   },
   emailVerifiedAt: {
     type: Date
+  },
+  // Health Profile
+  bloodGroup: {
+    type: String,
+    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', '']
+  },
+  height: {
+    type: Number // in cm
+  },
+  weight: {
+    type: Number // in kg
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Other', '']
+  },
+  allergies: [{
+    type: String
+  }],
+  chronicConditions: [{
+    type: String
+  }],
+  emergencyContact: {
+    name: String,
+    phone: String,
+    relationship: String
   }
 }, {
   timestamps: true

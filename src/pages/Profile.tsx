@@ -1,4 +1,4 @@
-import { Heart, Calendar, CreditCard, HelpCircle, LogOut, ChevronRight, Activity } from "lucide-react";
+import { HelpCircle, LogOut, ChevronRight, Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import BottomNav from "@/components/BottomNav";
 import { useNavigate } from "react-router-dom";
@@ -33,9 +33,7 @@ const Profile = () => {
 
   const menuItems = [
     { icon: Activity, label: "My Saved", path: "/saved" },
-    { icon: Calendar, label: "Appointment", path: "/appointments" },
-    { icon: CreditCard, label: "Payment Method", path: "/payment" },
-    { icon: HelpCircle, label: "FAQs", path: "/faqs" },
+    { icon: HelpCircle, label: "Help", path: "/help" },
     { icon: LogOut, label: "Logout", path: "/", variant: "danger" as const },
   ];
 
@@ -62,27 +60,40 @@ const Profile = () => {
           </div>
 
           {/* Health Stats */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <Heart className="w-4 h-4 text-accent" />
-                <span className="text-2xl font-bold text-foreground">97</span>
-              </div>
-              <p className="text-xs text-muted-foreground">Heart Rate</p>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-1 mb-1">
-                <span className="text-2xl font-bold text-foreground">A+</span>
+                <span className="text-2xl font-bold text-foreground">
+                  {user?.bloodGroup || '--'}
+                </span>
               </div>
               <p className="text-xs text-muted-foreground">Blood Group</p>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <span className="text-2xl font-bold text-foreground">103</span>
+                <span className="text-2xl font-bold text-foreground">
+                  {user?.height || '--'}
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground">Weight (lbs)</p>
+              <p className="text-xs text-muted-foreground">Height (cm)</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <span className="text-2xl font-bold text-foreground">
+                  {user?.weight || '--'}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">Weight (kg)</p>
             </div>
           </div>
+
+          <Button 
+            onClick={() => navigate('/edit-profile')}
+            className="w-full"
+            variant="outline"
+          >
+            Edit Profile
+          </Button>
         </Card>
       </div>
 

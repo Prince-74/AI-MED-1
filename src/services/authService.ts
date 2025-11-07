@@ -5,6 +5,19 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
+  dateOfBirth?: Date;
+  bloodGroup?: string;
+  height?: number;
+  weight?: number;
+  gender?: string;
+  allergies?: string[];
+  chronicConditions?: string[];
+  emergencyContact?: {
+    name: string;
+    phone: string;
+    relationship: string;
+  };
 }
 
 export interface LoginData {

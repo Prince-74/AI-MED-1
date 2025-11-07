@@ -6,6 +6,7 @@ import { connectDB } from './config/database';
 import reportRoutes from './routes/reports';
 import authRoutes from './routes/auth';
 import ocrRoutes from './routes/ocr';
+import symptomRoutes from './routes/symptoms';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api', ocrRoutes);
+app.use('/api/symptoms', symptomRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

@@ -211,6 +211,53 @@ router.get('/verify-email/:token', async (req: Request, res: Response) => {
   }
 });
 
+// Update user profile
+router.put('/profile', async (req: Request, res: Response) => {
+  try {
+    const userId = req.body.userId;
+    const updates = req.body;
+
+    // Remove sensitive fields that shouldn't be updated via this endpoint
+    delete updates.password;
+    delete updates.email;
+    delete updates.isVerified;
+    delete updates.verificationToken;
+    delete updates.userId;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        dateOfBirth: user.dateOfBirth,
+        bloodGroup: user.bloodGroup,
+        height: user.height,
+        weight: user.weight,
+        gender: user.gender,
+        allergies: user.allergies,
+        chronicConditions: user.chronicConditions,
+        emergencyContact: user.emergencyContact
+      }
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ message: 'Error updating profile' });
+  }
+});
+
 // Resend verification email
 router.post('/resend-verification', async (req: Request, res: Response) => {
   try {

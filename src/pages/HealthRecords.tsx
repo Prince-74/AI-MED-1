@@ -190,7 +190,11 @@ ${new Date().toLocaleString()}
         ) : (
           <div className="space-y-4">
             {reports.map((report) => (
-              <Card key={report._id} className="p-5 shadow-card relative">
+              <Card 
+                key={report._id} 
+                className="p-5 shadow-card relative cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => navigate(`/report/${report._id}`)}
+              >
                 {/* Timeline dot */}
                 <div className="absolute -left-3 top-6 w-6 h-6 bg-primary rounded-full border-4 border-background" />
                 
@@ -235,7 +239,10 @@ ${new Date().toLocaleString()}
                     variant="outline" 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => handleDownload(report)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownload(report);
+                    }}
                   >
                     <Download className="w-4 h-4 mr-1" />
                     Download
@@ -244,7 +251,10 @@ ${new Date().toLocaleString()}
                     variant="outline" 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => handleShare(report)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShare(report);
+                    }}
                   >
                     <Share2 className="w-4 h-4 mr-1" />
                     Share

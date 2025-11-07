@@ -19,6 +19,7 @@ import SymptomTracker from "./pages/SymptomTracker";
 import ReportAnalyzer from "./pages/ReportAnalyzer";
 import MedicationAssistant from "./pages/MedicationAssistant";
 import HealthRecords from "./pages/HealthRecords";
+import ReportDetail from "./pages/ReportDetail";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
 import ResendVerification from "./pages/ResendVerification";
@@ -54,6 +55,7 @@ const App = () => (
           <Route path="/report-analyzer" element={<AuthGuard><ReportAnalyzer /></AuthGuard>} />
           <Route path="/medication-assistant" element={<AuthGuard><MedicationAssistant /></AuthGuard>} />
           <Route path="/health-records" element={<AuthGuard><HealthRecords /></AuthGuard>} />
+          <Route path="/report/:id" element={<AuthGuard><ReportDetail /></AuthGuard>} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

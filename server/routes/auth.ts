@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import User from '../models/User';
 import { createRequire } from 'module';
 import { OAuth2Client } from 'google-auth-library';
+import { authenticate, AuthRequest } from '../middleware/auth';
 
 const require = createRequire(import.meta.url);
 const { sendVerificationEmail } = require('../services/emailService');
@@ -76,7 +77,8 @@ router.post('/register', async (req: Request, res: Response) => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          isVerified: user.isVerified
+          isVerified: user.isVerified,
+          isProfileComplete: user.isProfileComplete
         },
         emailSent: emailResult.success
       }
@@ -138,7 +140,8 @@ router.post('/login', async (req: Request, res: Response) => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          isVerified: user.isVerified
+          isVerified: user.isVerified,
+          isProfileComplete: user.isProfileComplete
         }
       }
     });
@@ -411,6 +414,7 @@ router.post('/google', async (req: Request, res: Response) => {
           firstName: user.firstName,
           lastName: user.lastName,
           isVerified: user.isVerified,
+          isProfileComplete: user.isProfileComplete,
           profilePicture: user.profilePicture,
           authProvider: user.authProvider
         }
@@ -421,6 +425,68 @@ router.post('/google', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Google authentication failed. Please try again.'
+    });
+  }
+});
+
+// Update user profile with medical information
+router.put('/profile', authenticate, async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId;
+    const { phone, dob, gender, bloodGroup, emergencyContact, medicalHistory } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: 'User not authenticated'
+      });
+    }
+
+    // Find and update user
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        phone,
+        dateOfBirth: dob,
+        gender,
+        bloodGroup,
+        emergencyContact,
+        medicalHistory,
+        isProfileComplete: true
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: {
+        user: {
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phone: user.phone,
+          dateOfBirth: user.dateOfBirth,
+          gender: user.gender,
+          bloodGroup: user.bloodGroup,
+          emergencyContact: user.emergencyContact,
+          medicalHistory: user.medicalHistory,
+          isProfileComplete: user.isProfileComplete
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
     });
   }
 });

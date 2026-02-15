@@ -1,130 +1,175 @@
+# 🏥 AI-MED - Clinical Decision Support System
 
-# AI-MED
+AI-MED is a clinical decision-support tool that uses patient history and medical risk analysis to generate structured, doctor-ready reports. It assists healthcare professionals with faster initial assessment, consistent record evaluation, and improved patient communication.
 
-AI-MED is a clinical decision-support tool that uses patient history and medical risk analysis to generate structured, doctor-ready reports. It aims to assist healthcare professionals with faster initial assessment, consistent record evaluation, and improved patient communication.
+**📚 For complete documentation, see [DOCUMENTATION.md](DOCUMENTATION.md)**
 
-## Objective
+---
 
-Reduce the manual workload in reviewing patient history by using AI to:
+## 🎯 Quick Start
 
-* Extract key clinical details from structured/unstructured inputs
-* Assess potential health risks based on standard medical guidelines
-* Provide a concise summary and handout for doctors and patients
+### Prerequisites
+- Node.js v18+
+- MongoDB (local or cloud)
+- npm or bun
 
-This is not a diagnostic engine. It is an assistive information system to support clinical workflows.
+### Installation & Setup
 
-## Key Features
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-* Patient record ingestion: symptoms, vitals, medications, medical history
-* Rule-based and ML-based risk scoring (expandable with evidence-based models)
-* Doctor-friendly summary including:
+2. **Configure environment (.env):**
+   ```bash
+   MONGODB_URI=mongodb+srv://your-uri
+   JWT_SECRET=your-secret-key
+   GEMINI_API_KEY=your-gemini-key
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASSWORD=your-app-password
+   ```
 
-  * Critical warnings
-  * Suggested areas of examination
-  * Relevant historical patterns
-* Exportable handouts as PDFs or data objects
-* Modular architecture for integrating EHR or hospital systems later
+3. **Run the application:**
+   ```bash
+   # Terminal 1 - Backend
+   npm run server
+   
+   # Terminal 2 - Frontend
+   npm run dev
+   ```
 
-## Tech Stack
+4. **Open in browser:**
+   🌐 http://localhost:8080
 
-* Python
-* Scikit-learn or custom rule-based models
-* Flask/FastAPI backend for modular deployment
-* Optional: React/Streamlit UI for clinician dashboard
-* PDF generation library for handout output
+---
 
-## Project Structure
+## ✨ Key Features
 
-```
-AI-MED/
-  src/
-    data_processing/
-    models/
-    risk_analysis/
-    report_generation/
-  ui/
-  examples/
-  tests/
-  requirements.txt
-  README.md
-```
+- ✅ **Authentication System** - Secure user registration & login with JWT
+- ✅ **Email Verification** - Automatic email verification on signup
+- ✅ **Medical Report OCR** - Extract text from medical documents (PDF/Image)
+- ✅ **Report Analysis** - Analyze medical reports with AI
+- ✅ **Symptom Checker** - AI-powered symptom analysis
+- ✅ **Medical History** - Track and analyze patient history
+- ✅ **Remember Me** - Persistent login functionality
+- ✅ **Health Records** - Save and manage medical reports
 
-This structure will evolve as modules expand.
+---
 
-## How It Works
+## 🛠 Tech Stack
 
-1. Intake: User enters patient history (form or uploading their prescriptions)
-2. Parsing: System standardizes symptoms, vitals, ICD-coded conditions (planned)
-3. Risk Scoring: Algorithm checks correlations with known risk factors
-4. Output: Generates a structured medical brief for physicians
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React + TypeScript + Vite + Tailwind CSS + shadcn/ui |
+| **Backend** | Node.js + Express + TypeScript |
+| **Database** | MongoDB Atlas (Cloud) |
+| **AI** | Google Gemini API |
+| **OCR** | Tesseract.js |
+| **Auth** | JWT + bcryptjs |
 
-Flow Example:
+---
 
-```
-Patient Input → History Parsing → Risk Analysis → Doctor Handout
-```
+## � Deploy to Production
 
-## Setup & Usage
+Want to deploy your forked project?
 
-Clone the project:
+**⚡ Quick Deploy (9 minutes):**
+1. **Backend** → [Render.com](https://render.com) - See [QUICK_DEPLOY.md](QUICK_DEPLOY.md)
+2. **Frontend** → [Vercel.com](https://vercel.com) - See [QUICK_DEPLOY.md](QUICK_DEPLOY.md)
+
+**📖 Detailed Guide:**
+- Complete step-by-step: [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
+- Environment variables checklist included
+- Troubleshooting for common issues
+- 100% Free tier deployment available
+
+---
+
+## �📖 Documentation
+
+Complete documentation available in [DOCUMENTATION.md](DOCUMENTATION.md) including:
+
+- **Setup & Installation** - Detailed setup instructions
+- **Features** - Complete feature descriptions
+- **API Endpoints** - All available endpoints
+- **Database Schema** - Data structure documentation
+- **Troubleshooting** - Common issues & solutions
+- **Development Guide** - How to extend the project
+
+---
+
+## 🚀 Available Commands
 
 ```bash
-git clone https://github.com/Saadsaleem17/AI-MED.git
-cd AI-MED
+npm run dev              # Start frontend dev server
+npm run server          # Start backend with auto-reload
+npm run build           # Build frontend for production
+npm run server:build    # Compile TypeScript server
+npm run server:start    # Run compiled server
+npm run lint            # Run ESLint
 ```
 
-Install requirements:
+---
 
-```bash
-pip install -r requirements.txt
-```
+## 📋 API Endpoints Summary
 
-Run locally:
+| Category | Endpoint | Method |
+|----------|----------|--------|
+| **Auth** | `/api/auth/register` | POST |
+| | `/api/auth/login` | POST |
+| | `/api/auth/verify-email/:token` | GET |
+| **Reports** | `/api/reports` | POST |
+| | `/api/reports/user/:userId` | GET |
+| **OCR** | `/api/ocr` | POST |
+| **Symptoms** | `/api/symptoms/analyze` | POST |
 
-```bash
-python app.py
-```
+See [DOCUMENTATION.md](DOCUMENTATION.md) for complete API reference.
 
-Open UI (if enabled) in browser:
-`http://localhost:5000`
+---
 
-## Current Limitations
+## 🔐 Security Features
 
-* Limited dataset for risk scoring benchmarks
-* Does not replace certified medical decision systems
-* Needs deeper clinical validation with real practitioner feedback
-* NLP support for unstructured medical text is under development
+- Bcrypt password hashing
+- JWT token-based authentication
+- Email verification system
+- Remember Me with secure storage
+- AuthGuard for protected routes
+- CORS protection
+- Input validation
+- Rate limiting ready
 
-## Roadmap
+---
 
-| Feature                              | Status      |
-| ------------------------------------ | ----------- |
-| OCR for written prescriptions        | Completed   |
-| Website and Database systems         | Completed   |
-| Symptoms based analysis              | Completed   |
-| Basic risk scoring                   | In progress |
-| PDF handout generation               | In progress |
-| EHR integration capability           | Planned     |
-| Evidence-based model training        | Planned     |
-| HIPAA/GDPR-compliant deployment      | Planned     |
+## ⚠️ Important Disclaimer
 
-## Contributing
+**AI-MED is an assistive tool and must NOT be used as a sole basis for medical diagnosis or treatment.**
 
-Contributions focused on medical data standards, validated scoring models, and UI improvement are welcome.
+This system is designed to:
+- ✅ Support healthcare professionals
+- ✅ Provide information only
+- ✅ Assist in faster assessments
 
-Steps:
+This system is NOT designed to:
+- ❌ Replace professional medical judgment
+- ❌ Provide definitive diagnoses
+- ❌ Override medical expertise
 
-* Fork repository
-* Create feature branch
-* Submit pull request with description
+**Always consult qualified healthcare providers for medical decisions.**
 
-## License
+---
+
+## 📞 Support
+
+- 📚 Read [DOCUMENTATION.md](DOCUMENTATION.md) for detailed guidance
+- 🐛 Check troubleshooting section for common issues
+- 💻 Review browser console and server logs for errors
+
+---
+
+## 📄 License
 
 To be defined (MIT recommended).
 
-## Disclaimer
+---
 
-AI-MED is an assistive tool and must not be used as a sole basis for medical diagnosis or treatment.
-
-
-If you want, I’ll tailor this further once your repo has actual folders, functions, and UI screenshots. I can also draft **feature badges**, a **logo**, and sample patient input/outputs for the README to look polished.
+**Status**: ✅ Production Ready | **Version**: 1.0 | **Last Updated**: February 2026

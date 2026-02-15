@@ -32,7 +32,12 @@ const SignUp = () => {
       const result = await authService.googleLogin(credentialResponse.credential);
       if (result.success) {
         toast.success("Signed up with Google successfully!");
-        navigate("/home");
+        // Check if profile is complete
+        if (result.data?.user?.isProfileComplete) {
+          navigate("/home");
+        } else {
+          navigate("/onboarding");
+        }
       } else {
         toast.error(result.error || "Google sign-up failed");
       }

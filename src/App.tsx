@@ -9,6 +9,7 @@ import Welcome from "./pages/Welcome";
 import Auth from "./pages/Auth";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import PatientOnboarding from "./pages/PatientOnboarding";
 import Home from "./pages/Home";
 import Pharmacy from "./pages/Pharmacy";
 import Medicines from "./pages/Medicines";
@@ -44,6 +45,9 @@ const App = () => (
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/resend-verification" element={<ResendVerification />} />
+          
+          {/* Onboarding - requires auth but before main app */}
+          <Route path="/onboarding" element={<AuthGuard><PatientOnboarding /></AuthGuard>} />
           
           {/* Protected routes */}
           <Route path="/home" element={<AuthGuard><Home /></AuthGuard>} />

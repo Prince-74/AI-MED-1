@@ -28,7 +28,12 @@ const SignIn = () => {
       const result = await authService.googleLogin(credentialResponse.credential);
       if (result.success) {
         toast.success("Signed in with Google successfully!");
-        navigate("/home");
+        // Check if profile is complete
+        if (result.data?.user?.isProfileComplete) {
+          navigate("/home");
+        } else {
+          navigate("/onboarding");
+        }
       } else {
         toast.error(result.error || "Google sign-in failed");
       }
@@ -57,7 +62,13 @@ const SignIn = () => {
       if (result.success) {
         toast.success("Signed in successfully!");
         console.log('Login successful, rememberMe was:', rememberMe);
-        navigate("/home");
+        
+        // Check if profile is complete
+        if (result.data?.user?.isProfileComplete) {
+          navigate("/home");
+        } else {
+          navigate("/onboarding");
+        }
       } else {
         // Check if user needs email verification
         if (result.needsVerification) {

@@ -11,13 +11,20 @@ export interface User {
   height?: number;
   weight?: number;
   gender?: string;
-  allergies?: string[];
-  chronicConditions?: string[];
+  allergies?: string;
+  currentMedications?: string;
+  chronicConditions?: string;
   emergencyContact?: {
     name: string;
     phone: string;
     relationship: string;
   };
+  medicalHistory?: {
+    allergies: string;
+    currentMedications: string;
+    chronicConditions: string;
+  };
+  isProfileComplete?: boolean;
 }
 
 export interface LoginData {
@@ -258,6 +265,54 @@ class AuthService {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('userId');
+  }
+
+  async updateProfile(profileData: any): Promise<AuthResponse> {
+    try {
+      if (!this.token) {
+        return {
+          success: false,
+          error: 'No authentication token found'
+        };
+      }
+
+      const response = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.token}`
+        },
+        body: JSON.stringify(profileData)
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data?.user) {
+        this.user = result.data.user;
+        
+        // Update stored user data
+        localStorage.setItem('user', JSON.stringify(this.user));
+        sessionStorage.setItem('user', JSON.stringify(this.user));
+
+        return {
+          success: true,
+          data: {
+            token: this.token,
+            user: this.user
+          }
+        };
+      }
+
+      return {
+        success: false,
+        error: result.error || 'Profile update failed'
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: (error as Error).message
+      };
+    }
   }
 
   getRememberMe(): boolean {

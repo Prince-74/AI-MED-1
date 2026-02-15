@@ -15,17 +15,24 @@ export interface IUser extends Document {
   verificationToken?: string;
   verificationExpires?: Date;
   emailVerifiedAt?: Date;
+  isProfileComplete: boolean;
   // Health Profile
   bloodGroup?: string;
   height?: number; // in cm
   weight?: number; // in kg
   gender?: string;
-  allergies?: string[];
-  chronicConditions?: string[];
+  allergies?: string;
+  currentMedications?: string;
+  chronicConditions?: string;
   emergencyContact?: {
     name: string;
     phone: string;
     relationship: string;
+  };
+  medicalHistory?: {
+    allergies: string;
+    currentMedications: string;
+    chronicConditions: string;
   };
   createdAt: Date;
   updatedAt: Date;
@@ -79,6 +86,10 @@ const UserSchema: Schema = new Schema({
     type: Boolean,
     default: false
   },
+  isProfileComplete: {
+    type: Boolean,
+    default: false
+  },
   verificationToken: {
     type: String
   },
@@ -101,18 +112,29 @@ const UserSchema: Schema = new Schema({
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female', 'Other', '']
+    enum: ['male', 'female', 'other', '']
   },
-  allergies: [{
-    type: String
-  }],
-  chronicConditions: [{
-    type: String
-  }],
+  allergies: {
+    type: String,
+    default: ''
+  },
+  currentMedications: {
+    type: String,
+    default: ''
+  },
+  chronicConditions: {
+    type: String,
+    default: ''
+  },
   emergencyContact: {
     name: String,
     phone: String,
     relationship: String
+  },
+  medicalHistory: {
+    allergies: String,
+    currentMedications: String,
+    chronicConditions: String
   }
 }, {
   timestamps: true

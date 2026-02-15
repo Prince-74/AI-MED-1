@@ -420,7 +420,7 @@ const ReportAnalyzer = () => {
 
     setLoading(true);
     try {
-      const userId = localStorage.getItem('userId') || 'demo-user';
+      const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
       
       const report: Omit<Report, '_id' | 'uploadDate'> = {
         userId,

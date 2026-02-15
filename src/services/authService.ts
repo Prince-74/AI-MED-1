@@ -42,6 +42,7 @@ export interface AuthResponse {
     user: User;
   };
   error?: string;
+  needsVerification?: boolean;
 }
 
 class AuthService {
@@ -137,6 +138,44 @@ class AuthService {
       return {
         success: false,
         error: 'Network error. Please try again.',
+      };
+    }
+  }
+
+  async googleLogin(credential: string): Promise<AuthResponse> {
+    try {
+      const response = await fetch(`${API_URL}/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ credential }),
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        this.token = result.data.token;
+        this.user = result.data.user;
+        this.rememberMe = true; // Google users stay logged in
+
+        // Store in localStorage (persistent) for Google auth
+        localStorage.setItem('token', this.token!);
+        localStorage.setItem('user', JSON.stringify(this.user));
+        localStorage.setItem('userId', this.user!.id);
+        localStorage.setItem('rememberMe', 'true');
+
+        // Clear session storage
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('userId');
+      }
+
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Google authentication failed. Please try again.',
       };
     }
   }

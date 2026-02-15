@@ -19,9 +19,9 @@ const HealthRecords = () => {
 
   const fetchReports = async () => {
     try {
-      const userId = localStorage.getItem('userId') || 'demo-user';
+      const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
       const result = await reportService.getUserReports(userId);
-      
+
       if (result.success) {
         setReports(result.data);
       } else {
@@ -113,14 +113,14 @@ ${new Date().toLocaleString()}
   const handleShare = async (report: Report) => {
     try {
       const shareText = `Medical Report: ${report.fileName}\n\nSummary: ${report.summary}\n\nDate: ${new Date(report.uploadDate!).toLocaleDateString()}`;
-      
+
       // Check if Web Share API is available
       if (navigator.share) {
         await navigator.share({
           title: `Medical Report - ${report.fileName}`,
           text: shareText,
         });
-        
+
         toast({
           title: "Success",
           description: "Report shared successfully",
@@ -128,7 +128,7 @@ ${new Date().toLocaleString()}
       } else {
         // Fallback: Copy to clipboard
         await navigator.clipboard.writeText(shareText);
-        
+
         toast({
           title: "Copied to Clipboard",
           description: "Report details copied. You can now paste and share.",
@@ -139,7 +139,7 @@ ${new Date().toLocaleString()}
       try {
         const shareText = `Medical Report: ${report.fileName}\n\nSummary: ${report.summary}`;
         await navigator.clipboard.writeText(shareText);
-        
+
         toast({
           title: "Copied to Clipboard",
           description: "Report details copied. You can now paste and share.",
@@ -180,8 +180,8 @@ ${new Date().toLocaleString()}
           <div className="text-center py-8">
             <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
             <p className="text-muted-foreground">No reports found</p>
-            <Button 
-              className="mt-4" 
+            <Button
+              className="mt-4"
               onClick={() => navigate('/report-analyzer')}
             >
               Upload Your First Report
@@ -190,14 +190,14 @@ ${new Date().toLocaleString()}
         ) : (
           <div className="space-y-4">
             {reports.map((report) => (
-              <Card 
-                key={report._id} 
+              <Card
+                key={report._id}
                 className="p-5 shadow-card relative cursor-pointer hover:shadow-lg transition-shadow"
                 onClick={() => navigate(`/report/${report._id}`)}
               >
                 {/* Timeline dot */}
                 <div className="absolute -left-3 top-6 w-6 h-6 bg-primary rounded-full border-4 border-background" />
-                
+
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <FileText className="w-5 h-5 text-primary" />
@@ -235,9 +235,9 @@ ${new Date().toLocaleString()}
                 )}
 
                 <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="flex-1"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -247,9 +247,9 @@ ${new Date().toLocaleString()}
                     <Download className="w-4 h-4 mr-1" />
                     Download
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="flex-1"
                     onClick={(e) => {
                       e.stopPropagation();

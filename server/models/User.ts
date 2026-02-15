@@ -3,11 +3,14 @@ import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
   email: string;
-  password: string;
+  password?: string;
   firstName: string;
   lastName: string;
   dateOfBirth?: Date;
   phone?: string;
+  googleId?: string;
+  authProvider: 'local' | 'google';
+  profilePicture?: string;
   isVerified: boolean;
   verificationToken?: string;
   verificationExpires?: Date;
@@ -39,8 +42,21 @@ const UserSchema: Schema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function(this: IUser) { return this.authProvider !== 'google'; },
     minlength: 6
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  authProvider: {
+    type: String,
+    enum: ['local', 'google'],
+    default: 'local'
+  },
+  profilePicture: {
+    type: String
   },
   firstName: {
     type: String,
@@ -104,7 +120,7 @@ const UserSchema: Schema = new Schema({
 
 // Hash password before saving
 UserSchema.pre<IUser>('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);

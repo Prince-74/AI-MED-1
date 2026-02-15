@@ -3,11 +3,21 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/User';
 import { createRequire } from 'module';
+import { OAuth2Client } from 'google-auth-library';
 
 const require = createRequire(import.meta.url);
 const { sendVerificationEmail } = require('../services/emailService');
 
 const router = express.Router();
+
+// Lazy-init to ensure dotenv has loaded before we read the env var
+let googleClient: OAuth2Client;
+function getGoogleClient() {
+  if (!googleClient) {
+    googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  }
+  return googleClient;
+}
 
 // Register new user
 router.post('/register', async (req: Request, res: Response) => {
@@ -304,6 +314,113 @@ router.post('/resend-verification', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: (error as Error).message
+    });
+  }
+});
+
+// Google Authentication
+router.post('/google', async (req: Request, res: Response) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({
+        success: false,
+        error: 'Google credential is required'
+      });
+    }
+
+    // Verify the Google ID token
+    const ticket = await getGoogleClient().verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid Google token'
+      });
+    }
+
+    const { sub: googleId, email, given_name, family_name, picture, email_verified } = payload;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email not provided by Google'
+      });
+    }
+
+    // Check if a user with this Google ID already exists
+    let user = await User.findOne({ googleId });
+
+    if (!user) {
+      // Check if a user with this email exists (registered via email/password)
+      user = await User.findOne({ email });
+
+      if (user) {
+        // Link Google account to existing user
+        user.googleId = googleId;
+        user.authProvider = user.authProvider === 'local' ? 'local' : 'google';
+        if (picture && !user.profilePicture) {
+          user.profilePicture = picture;
+        }
+        if (!user.isVerified) {
+          user.isVerified = true;
+          user.emailVerifiedAt = new Date();
+        }
+        await user.save();
+      } else {
+        // Create a new user with Google info
+        user = new User({
+          email,
+          googleId,
+          firstName: given_name || 'User',
+          lastName: family_name || given_name || 'User',
+          authProvider: 'google',
+          profilePicture: picture,
+          isVerified: true,
+          emailVerifiedAt: new Date()
+        });
+        await user.save();
+      }
+    } else {
+      // Update profile picture if changed
+      if (picture && user.profilePicture !== picture) {
+        user.profilePicture = picture;
+        await user.save();
+      }
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || 'fallback-secret',
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          isVerified: user.isVerified,
+          profilePicture: user.profilePicture,
+          authProvider: user.authProvider
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Google authentication failed. Please try again.'
     });
   }
 });

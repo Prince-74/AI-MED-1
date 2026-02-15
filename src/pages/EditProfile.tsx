@@ -35,10 +35,14 @@ const EditProfile = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const token = authService.getToken();
+      
+      const response = await fetch(`${API_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           userId: user?.id,
@@ -51,9 +55,10 @@ const EditProfile = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Update local storage
+        // Update storage based on where the token is stored
         const updatedUser = { ...user, ...data.user };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        const storage = localStorage.getItem('token') ? localStorage : sessionStorage;
+        storage.setItem('user', JSON.stringify(updatedUser));
         
         toast.success('Profile updated successfully');
         navigate('/profile');

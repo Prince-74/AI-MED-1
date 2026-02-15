@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import SymptomLog from '../models/SymptomLog';
-import Report from '../models/Report';
-import { analyzeSymptoms } from '../services/geminiService';
+import SymptomLog from '../models/SymptomLog.js';
+import Report from '../models/Report.js';
+import { analyzeSymptoms } from '../services/geminiService.js';
 
 const router = express.Router();
 

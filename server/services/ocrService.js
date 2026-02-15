@@ -1,6 +1,6 @@
-const fs = require("fs");
-const FormData = require("form-data");
-const axios = require("axios");
+import fs from 'fs';
+import FormData from 'form-data';
+import axios from 'axios';
 
 const OCR_API_URL = "https://api.ocr.space/parse/image";
 
@@ -220,7 +220,7 @@ function extractMedicalParameters(text) {
   return parameters;
 }
 
-module.exports = async function performOCR(filePath, fileType) {
+export default async function performOCR(filePath, fileType) {
   try {
     let result;
 
@@ -258,8 +258,8 @@ module.exports = async function performOCR(filePath, fileType) {
     // Generate AI analysis using Gemini
     let aiAnalysis = null;
     try {
-      const geminiService = require('./geminiService');
-      const geminiResult = await geminiService.analyzeMedicalReport(result.text, analysis.reportType);
+      const { analyzeMedicalReport } = await import('./geminiService.js');
+      const geminiResult = await analyzeMedicalReport(result.text, analysis.reportType);
       
       if (geminiResult.success) {
         aiAnalysis = geminiResult.analysis;

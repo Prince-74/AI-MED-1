@@ -2,10 +2,7 @@ import express, { Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const performOCR = require('../services/ocrService');
+import performOCR from '../services/ocrService.js';
 
 const router = express.Router();
 

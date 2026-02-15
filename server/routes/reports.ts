@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import Report from '../models/Report';
-import { authenticate, AuthRequest } from '../middleware/auth';
+import Report from '../models/Report.js';
+import { authenticate, AuthRequest } from '../middleware/auth.js';
 
 const router = express.Router();
 

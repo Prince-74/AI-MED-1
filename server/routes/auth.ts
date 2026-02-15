@@ -1,13 +1,10 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import User from '../models/User';
-import { createRequire } from 'module';
+import User from '../models/User.js';
 import { OAuth2Client } from 'google-auth-library';
-import { authenticate, AuthRequest } from '../middleware/auth';
-
-const require = createRequire(import.meta.url);
-const { sendVerificationEmail } = require('../services/emailService');
+import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { sendVerificationEmail } from '../services/emailService.js';
 
 const router = express.Router();
 

@@ -7,11 +7,11 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { connectDB } from './config/database';
-import reportRoutes from './routes/reports';
-import authRoutes from './routes/auth';
-import ocrRoutes from './routes/ocr';
-import symptomRoutes from './routes/symptoms';
+import { connectDB } from './config/database.js';
+import reportRoutes from './routes/reports.js';
+import authRoutes from './routes/auth.js';
+import ocrRoutes from './routes/ocr.js';
+import symptomRoutes from './routes/symptoms.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
